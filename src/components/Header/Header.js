@@ -4,6 +4,8 @@ import './Header.css'
 const Header = () => {
     const [countries, setCountries] = useState([]);
     const [country, setCountry] = useState('worldwide');
+    const [countryInfo, setCountryInfo] = useState({});
+
 
 useEffect(() => {
    
@@ -24,12 +26,25 @@ useEffect(() => {
 }, []);
 
 
-const onCountryChange = (event) => {
+const onCountryChange = async(event) => {
     const countryCode = event.target.value;
 
     // console.log("yessee", countryCode);
     setCountry(countryCode);
-}
+
+    const url = countryCode === 'worldwide' 
+    ? 'https://disease.sh/v3/covid-19/all' 
+    : `https://disease.sh/v3/covid-19/countries/${countryCode}` 
+
+    await fetch(url)
+    .then(res => res.json())
+    .then(data => {
+        setCountry(countryCode);
+        //All of the data from the country response
+        setCountryInfo(data);
+    })
+
+};
 
     return (
         <div className="app_header">
